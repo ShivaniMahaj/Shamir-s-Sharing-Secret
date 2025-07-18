@@ -18,8 +18,7 @@ int main() {
         std::cout << "Enter the total number of shares to distribute: ";
         std::cin >> numberOfShares;
 
-        std::cout << "Enter the threshold number of shares required for reconstruction: ";
-        std::cin >> thresholdNumber;
+        thresholdNumber = numberOfShares / 2;
 
         if (numberOfShares < thresholdNumber) {
             std::cout << "The total shares cannot be less than the threshold. Please try again.\n";
@@ -69,9 +68,19 @@ int main() {
 
                 std::vector<Share> selectedShares;
                 for (int i = 0; i < shareCount; ++i) {
-                    std::cout << "Requesting share from Participant " << (i + 1) << "\n";
-                    selectedShares.push_back(participants[i].provideShare(0));
+                    int participantIndex;
+                    std::cout << " Requesting share from Participant " << (i + 1) << ":";
+                    std::cin >> participantIndex;
+
+                    if (participantIndex < 1 || participantIndex > participants.size()) {
+                        std::cerr << "Error: Invalid participant index. Must be between 1 and " << participants.size() << "\n";
+                        --i;
+                        continue;
+                    }
+                    Share share = participants[participantIndex - 1].provideShare(0);
+                    selectedShares.push_back(share);
                 }
+
 
                 SecretReconstruction secretReconstruction(thresholdNumber);
                 int reconstructedSecret = secretReconstruction.reconstructSecret(selectedShares);
