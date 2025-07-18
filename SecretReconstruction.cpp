@@ -1,28 +1,20 @@
 #include "SecretReconstruction.hpp"
-#include <iostream>
 
-SecretReconstruction::SecretReconstruction(int threshold) : threshold(threshold), reconstructedSecret(0) {
+
+SecretReconstruction::SecretReconstruction(int threshold) : threshold(threshold) {
 }
 
-void SecretReconstruction::requestShare(Participant& participant) {
-    Share share = participant.provideShare(0);
-    receiveShare(share);
-}
 
-void SecretReconstruction::receiveShare(Share& share) {
-    shares.push_back(share);
-}
-
-int SecretReconstruction::lagrangeInterpolation(std::vector<Share>& shares) {
-    int secret = 0;
+double SecretReconstruction::lagrangeInterpolation(const  std::vector<Share>& shares) {
+    double  secret = 0.0;
     int n = shares.size();
 
     for (int i = 0; i < n; ++i) {
         int xi = shares[i].getShare().first;
         int yi = shares[i].getShare().second;
 
-        int numerator = 1;
-        int denominator = 1;
+        double numerator = 1.0;
+        double denominator = 1.0;
 
         for (int j = 0; j < n; ++j) {
             if (i != j) {
@@ -38,15 +30,8 @@ int SecretReconstruction::lagrangeInterpolation(std::vector<Share>& shares) {
     return secret;
 }
 
-int SecretReconstruction::reconstructSecret() {
-    int reconstructedSecret = lagrangeInterpolation(shares);
-    return reconstructedSecret;
-}
 
-//bool SecretReconstruction::validateReconstructedSecret(int secret) {
-//    return reconstructedSecret == secret;
-//}
-
-int SecretReconstruction::getReconstructedSecret() const {
-    //return reconstructedSecret;
+int SecretReconstruction::reconstructSecret(const std::vector<Share>& shares) {
+    double reconstructedSecret = lagrangeInterpolation(shares);
+    return static_cast<int>(std::round(reconstructedSecret));
 }

@@ -9,7 +9,6 @@ class Participant {
 public:
     void receiveShare(const Share& share);  
     Share provideShare(int index) const;  
-    std::vector<Share> provideAllShares() const;
 
 private:
     std::vector<Share> shares;

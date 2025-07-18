@@ -1,24 +1,20 @@
 #ifndef SECRETRECONSTRUCTION_HPP
 #define SECRETRECONSTRUCTION_HPP
 
+#include <iostream>
 #include <vector>
 #include "Share.hpp"
-#include "Participant.hpp"
 
 class SecretReconstruction {
 private:
-    std::vector<Share> shares;
     int threshold;
-    //int reconstructedSecret;
+
+private:
+    double lagrangeInterpolation(const  std::vector<Share>& shares);
 
 public:
     SecretReconstruction(int threshold);
-    void requestShare(Participant& participant);
-    void receiveShare(Share& share);
-    int lagrangeInterpolation(std::vector<Share>& shares);
-    int reconstructSecret();
-    bool validateReconstructedSecret(int secret);
-    int getReconstructedSecret() const;
+    int reconstructSecret(const std::vector<Share>& shares);
 };
 
 #endif SECRETRECONSTRUCTION_HPP

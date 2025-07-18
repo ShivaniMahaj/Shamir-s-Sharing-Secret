@@ -17,6 +17,7 @@ int main() {
     while (!validShares) {
         std::cout << "Enter the total number of shares to distribute: ";
         std::cin >> numberOfShares;
+
         std::cout << "Enter the threshold number of shares required for reconstruction: ";
         std::cin >> thresholdNumber;
 
@@ -39,11 +40,11 @@ int main() {
     char printShares;
     std::cout << "Do you want to print the list of shares? (y/n): ";
     std::cin >> printShares;
+
     if (printShares == 'y' || printShares == 'Y') {
         for (int i = 0; i < numberOfShares; ++i) {
             std::pair<int, int> share = shares[i].getShare();
-            std::cout << "Participant " << (i + 1) << ": Share y = "
-                << share.second << "\n";
+            std::cout << "Participant " << (i + 1) << ": Share y = " << share.second << "\n";
         }
     }
 
@@ -66,25 +67,30 @@ int main() {
             } else {
                 validReconstruction = true;
 
-                SecretReconstruction secretReconstruction(thresholdNumber);
+                std::vector<Share> selectedShares;
                 for (int i = 0; i < shareCount; ++i) {
-                    std::cout << "Requesting share from participant " << i+1 << std::endl;
-                    secretReconstruction.requestShare(participants[i]);
+                    std::cout << "Requesting share from Participant " << (i + 1) << "\n";
+                    selectedShares.push_back(participants[i].provideShare(0));
                 }
 
-                int reconstructedSecret = secretReconstruction.reconstructSecret();
+                SecretReconstruction secretReconstruction(thresholdNumber);
+                int reconstructedSecret = secretReconstruction.reconstructSecret(selectedShares);
 
                 if (dealer.verifySecret(reconstructedSecret)) {
-                    std::cout << "The secret has been successfully reconstructed!" << std::endl;
-                    std::cout << "Reconstructed secret: " << reconstructedSecret << std::endl;
+                    std::cout << "The secret has been successfully reconstructed!\n";
+                    std::cout << "Reconstructed secret: " << reconstructedSecret << "\n";
                 } else {
-                    std::cout << "Secret reconstruction failed!" << std::endl;
-                    std::cout << "Reconstructed secret: " << reconstructedSecret << std::endl;
+                    std::cout << "Secret reconstruction failed!\n";
+                    std::cout << "Reconstructed secret: " << reconstructedSecret << "\n";
                 }
             }
         }
-    } else {
+    }
+    else {
         std::cout << "Secret reconstruction skipped." << std::endl;
     }
+
     return 0;
 }
+
+
